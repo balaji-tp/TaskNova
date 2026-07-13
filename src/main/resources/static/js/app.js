@@ -28,8 +28,8 @@ function resolveApiBase() {
         return window.location.port === '8080' ? '/api' : 'http://localhost:8080/api';
     }
     
-    // If on Vercel or other cloud platforms, default to relative '/api'
-    return '/api';
+    // If on Vercel or other cloud platforms, default to local backend for testing/development
+    return 'http://localhost:8080/api';
 }
 
 let API_BASE = resolveApiBase();
