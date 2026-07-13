@@ -1,0 +1,56 @@
+CREATE DATABASE IF NOT EXISTS tasknova;
+USE tasknova;
+
+-- Drop tables if they exist to allow clean reseeding
+DROP TABLE IF EXISTS subtasks;
+DROP TABLE IF EXISTS tasks;
+DROP TABLE IF EXISTS categories;
+DROP TABLE IF EXISTS users;
+
+-- 1. Users table
+CREATE TABLE users (
+  id BIGINT PRIMARY KEY AUTO_INCREMENT,
+  name VARCHAR(100) NOT NULL,
+  email VARCHAR(150) UNIQUE NOT NULL,
+  password_hash VARCHAR(255) NOT NULL,
+  avatar_url VARCHAR(255),
+  dark_mode BOOLEAN DEFAULT FALSE,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 2. Categories table
+CREATE TABLE categories (
+  id BIGINT PRIMARY KEY AUTO_INCREMENT,
+  user_id BIGINT NOT NULL,
+  name VARCHAR(50) NOT NULL,
+  color_hex VARCHAR(7) DEFAULT '#6C5CE7',
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+-- 3. Tasks table
+CREATE TABLE tasks (
+  id BIGINT PRIMARY KEY AUTO_INCREMENT,
+  user_id BIGINT NOT NULL,
+  category_id BIGINT,
+  title VARCHAR(200) NOT NULL,
+  description TEXT,
+  due_date DATETIME,
+  priority ENUM('LOW','MEDIUM','HIGH') DEFAULT 'MEDIUM',
+  status ENUM('PENDING','IN_PROGRESS','COMPLETED') DEFAULT 'PENDING',
+  is_recurring BOOLEAN DEFAULT FALSE,
+  recurrence_pattern ENUM('NONE','DAILY','WEEKLY','MONTHLY') DEFAULT 'NONE',
+  position INT DEFAULT 0,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+  FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE SET NULL
+);
+
+-- 4. Subtasks table
+CREATE TABLE subtasks (
+  id BIGINT PRIMARY KEY AUTO_INCREMENT,
+  task_id BIGINT NOT NULL,
+  title VARCHAR(200) NOT NULL,
+  is_completed BOOLEAN DEFAULT FALSE,
+  FOREIGN KEY (task_id) REFERENCES tasks(id) ON DELETE CASCADE
+);
