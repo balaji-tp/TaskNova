@@ -1456,3 +1456,47 @@ body.dark-mode .modal-subtask-item {
         grid-template-columns: 1fr 1fr;
     }
 }
+
+/* Server Config Styles */
+.server-config-link {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 13px;
+}
+.server-config-link a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: var(--transition-fast);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+.server-config-link a:hover {
+    color: var(--color-primary);
+}
+.server-config-panel {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px dashed var(--border-color);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.server-config-buttons {
+    display: flex;
+    gap: 10px;
+}
+.btn-sm {
+    padding: 8px 12px;
+    font-size: 12px;
+    border-radius: var(--radius-sm);
+}
+.btn-outline {
+    background: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+}
+.btn-outline:hover {
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+}

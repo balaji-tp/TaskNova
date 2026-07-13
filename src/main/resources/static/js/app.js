@@ -14,10 +14,67 @@ const STATE = {
     modalSubtasks: [] // Temp array for subtasks when editing/creating a task
 };
 
-// API Base Path (Dynamic: relative on localhost, points to local port 8080 if running on cloud)
-const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-    ? '/api'
-    : 'http://localhost:8080/api';
+// Resolve the API base URL dynamically
+function resolveApiBase() {
+    const saved = localStorage.getItem('tasknova_api_base');
+    if (saved) {
+        return saved;
+    }
+    
+    // Default fallback resolution:
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        // If running locally, check port. If port is 8080, relative '/api' works. 
+        // If on another port (like 5500 for Live Server), point to the default port 8080.
+        return window.location.port === '8080' ? '/api' : 'http://localhost:8080/api';
+    }
+    
+    // If on Vercel or other cloud platforms, default to relative '/api'
+    return '/api';
+}
+
+let API_BASE = resolveApiBase();
+
+// Server Configuration Handlers (for toggle, save, reset)
+function toggleServerConfig(e) {
+    if (e) e.preventDefault();
+    const panel = document.getElementById('server-config-panel');
+    const input = document.getElementById('server-api-url');
+    
+    if (panel.style.display === 'none') {
+        panel.style.display = 'flex';
+        input.value = API_BASE;
+    } else {
+        panel.style.display = 'none';
+    }
+}
+
+function saveServerConfig() {
+    const input = document.getElementById('server-api-url').value.trim();
+    if (!input) {
+        showToast('API URL cannot be empty.', 'error');
+        return;
+    }
+    try {
+        if (input.startsWith('http://') || input.startsWith('https://') || input.startsWith('/')) {
+            localStorage.setItem('tasknova_api_base', input);
+            API_BASE = input;
+            showToast('Server settings updated successfully.', 'success');
+            document.getElementById('server-config-panel').style.display = 'none';
+        } else {
+            showToast('Please enter a valid URL starting with http://, https:// or /', 'error');
+        }
+    } catch (e) {
+        showToast('Invalid URL format.', 'error');
+    }
+}
+
+function resetServerConfig() {
+    localStorage.removeItem('tasknova_api_base');
+    API_BASE = resolveApiBase();
+    document.getElementById('server-api-url').value = API_BASE;
+    showToast('Server settings reset to default.', 'info');
+    document.getElementById('server-config-panel').style.display = 'none';
+}
 
 // On Document Ready
 document.addEventListener('DOMContentLoaded', () => {
@@ -190,7 +247,7 @@ async function handleLogin(e) {
             showToast(err.message || 'Authentication failed.', 'error');
         }
     } catch (e) {
-        showToast('Connection to auth server failed.', 'error');
+        showToast('Connection to server failed. Check your Server Settings.', 'error');
     }
 }
 
@@ -224,7 +281,7 @@ async function handleRegister(e) {
             showToast(err.message || 'Registration failed.', 'error');
         }
     } catch (e) {
-        showToast('Connection to server failed.', 'error');
+        showToast('Connection to server failed. Check your Server Settings.', 'error');
     }
 }
 

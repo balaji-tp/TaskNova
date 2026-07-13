@@ -68,6 +68,23 @@
                     <span>Sign Up</span> <i class="fa-solid fa-user-plus"></i>
                 </button>
             </form>
+
+            <div class="server-config-link">
+                <a href="#" onclick="toggleServerConfig(event)">
+                    <i class="fa-solid fa-server"></i> <span>Server Settings</span>
+                </a>
+            </div>
+            
+            <div id="server-config-panel" class="server-config-panel" style="display: none;">
+                <div class="input-group">
+                    <i class="fa-solid fa-link"></i>
+                    <input type="url" id="server-api-url" placeholder="API Base URL (e.g. http://localhost:8080/api)">
+                </div>
+                <div class="server-config-buttons">
+                    <button type="button" class="btn btn-primary btn-sm" onclick="saveServerConfig()">Save</button>
+                    <button type="button" class="btn btn-outline btn-sm" onclick="resetServerConfig()">Reset</button>
+                </div>
+            </div>
         </div>
     </div>
 
