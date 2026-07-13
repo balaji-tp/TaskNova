@@ -14,8 +14,10 @@ const STATE = {
     modalSubtasks: [] // Temp array for subtasks when editing/creating a task
 };
 
-// API Base Path
-const API_BASE = '/api';
+// API Base Path (Dynamic: relative on localhost, points to local port 8080 if running on cloud)
+const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    ? '/api'
+    : 'http://localhost:8080/api';
 
 // On Document Ready
 document.addEventListener('DOMContentLoaded', () => {
